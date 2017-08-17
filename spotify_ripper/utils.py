@@ -230,7 +230,7 @@ def format_track_string(ripper, format_string, idx, track):
         playlist_owner = to_ascii(
             current_playlist.owner.display_name)
     else:
-        playlist_name = "No Playlist"
+        playlist_name = getattr(ripper, 'playlist_uri', "No Playlist")
         playlist_owner = "No Playlist Owner"
     user = ripper.session.user.display_name
 

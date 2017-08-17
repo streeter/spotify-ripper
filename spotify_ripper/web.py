@@ -4,12 +4,16 @@ from __future__ import unicode_literals
 
 from colorama import Fore
 from spotify_ripper.utils import *
+import spotipy.util as util
+import spotipy.client
 import os
 import time
 import spotify
 import requests
 import csv
 import re
+
+scope = 'playlist-modify-public playlist-modify-private playlist-read-collaborative'
 
 
 class WebAPI(object):
@@ -129,9 +133,9 @@ class WebAPI(object):
 
     # genre_type can be "artist" or "album"
     def get_genres(self, genre_type, track):
-        def get_genre_json(spotify_id):
-            url = self.api_url(genre_type + 's/' + spotify_id)
-            return self.request_json(url, "genres")
+        token = util.prompt_for_user_token(self.ripper.session.user.canonical_name, scope)
+        instance = spotipy.Spotify(auth=token)
+        instance.trace = False
 
         # extract album id from uri
         item = track.artists[0] if genre_type == "artist" else track.album
@@ -146,7 +150,10 @@ class WebAPI(object):
         if len(uri_tokens) != 3:
             return None
 
-        json_obj = get_genre_json(uri_tokens[2])
+        if genre_type == 'artist':
+            json_obj = instance.artist(uri_tokens[2])
+        else:
+            json_obj = instance.album(uri_tokens[2])
         if json_obj is None:
             return None
 

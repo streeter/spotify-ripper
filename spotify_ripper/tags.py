@@ -153,6 +153,8 @@ def set_metadata_tags(args, audio_file, idx, track, ripper):
             if args.comment is not None:
                 audio.tags.add(
                     id3.COMM(text=[tag_to_ascii(comment, comment_ascii)],
+                             lang='eng',
+                             desc='',
                              encoding=3))
             if args.grouping is not None:
                 audio.tags.add(
@@ -160,8 +162,8 @@ def set_metadata_tags(args, audio_file, idx, track, ripper):
                              encoding=3))
             if genres is not None and genres:
                 tcon_tag = id3.TCON(encoding=3)
-                tcon_tag.genres = genres if args.ascii_path_only \
-                    else genres_ascii
+                _genres = genres if args.ascii_path_only else genres_ascii
+                tcon_tag.genres = ' '.join(_genres)
                 audio.tags.add(tcon_tag)
 
             if args.id3_v23:
@@ -224,8 +226,8 @@ def set_metadata_tags(args, audio_file, idx, track, ripper):
                              encoding=3))
             if genres is not None and genres:
                 tcon_tag = id3.TCON(encoding=3)
-                tcon_tag.genres = genres if args.ascii_path_only \
-                    else genres_ascii
+                _genres = genres if args.ascii_path_only else genres_ascii
+                tcon_tag.genres = ' '.join(_genres)
                 id3_dict.add(tcon_tag)
 
             if args.id3_v23:

@@ -341,6 +341,7 @@ class Ripper(threading.Thread):
                     self.finish_rip(track)
 
                     # update id3v2 with metadata and embed front cover image
+                    self.playlist_uri = uri
                     set_metadata_tags(args, self.audio_file, idx, track, self)
 
                     # make a note of the index and remove all the
