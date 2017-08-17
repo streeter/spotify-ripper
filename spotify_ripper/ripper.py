@@ -275,8 +275,9 @@ class Ripper(threading.Thread):
                         continue
 
                     self.audio_file = self.format_track_path(idx, track)
+                    audio_file_enc = enc_str(self.audio_file)
 
-                    if not args.overwrite and path_exists(self.audio_file):
+                    if not args.overwrite and path_exists(audio_file_enc):
                         if is_partial(self.audio_file, track):
                             print("Overwriting partial file")
                         else:
@@ -284,6 +285,10 @@ class Ripper(threading.Thread):
                                 Fore.YELLOW + "Skipping " +
                                 track.link.uri + Fore.RESET)
                             print(Fore.CYAN + self.audio_file + Fore.RESET)
+                            # Touch the file to adjust the modified date
+                            Popen(['touch', audio_file_enc])
+                            time.sleep(0.1)
+
                             self.post.queue_remove_from_playlist(idx)
                             continue
 
@@ -429,8 +434,7 @@ class Ripper(threading.Thread):
         elif link.type == spotify.LinkType.PLAYLIST:
             print('get playlist tracks')
             self.playlist_uri = uri
-            tracks = get_playlist_tracks(self.session.user.canonical_name, uri)
-            track_list = tracks.get('items')
+            track_list = get_playlist_tracks(self.session.user.canonical_name, uri)
             for n in track_list:
                 thisTrack = n.get('track')
                 thisTrackuri = thisTrack.get('uri')

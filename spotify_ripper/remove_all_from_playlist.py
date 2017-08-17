@@ -38,8 +38,13 @@ def get_playlist_tracks(username, playlistURI):
     spotInstance.trace = False
 
     print('Getting Results')
-    results = spotInstance.user_playlist(username, rPlaylistID, fields="tracks,next")
 
-    tracks = results['tracks']
+    tracks = []
+
+    total = 10000
+    while len(tracks) < total:
+        results = spotInstance.user_playlist_tracks(username, rPlaylistID, limit=100, offset=len(tracks))
+        total = results['total']
+        tracks = tracks + results['items']
 
     return tracks
