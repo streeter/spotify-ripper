@@ -111,8 +111,15 @@ def set_metadata_tags(args, audio_file, idx, track, ripper):
                     embed_image_func(image)
 
         def set_id3_tags(audio):
+
+            # Delete any existing tags
+            audio.delete()
+
             # add ID3 tag if it doesn't exist
-            audio.add_tags()
+            try:
+                audio.add_tags()
+            except:
+                pass
 
             def embed_image(data):
                 audio.tags.add(
@@ -533,6 +540,6 @@ def set_metadata_tags(args, audio_file, idx, track, ripper):
                   str(audio.info.codec) + Fore.RESET)
             print("-" * 79)
 
-    except id3.error:
+    except id3.error as e:
         print(Fore.YELLOW + "Warning: exception while saving id3 tag: " +
-              str(id3.error) + Fore.RESET)
+              str(e) + Fore.RESET)

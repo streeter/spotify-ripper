@@ -285,6 +285,11 @@ class Ripper(threading.Thread):
                                 Fore.YELLOW + "Skipping " +
                                 track.link.uri + Fore.RESET)
                             print(Fore.CYAN + self.audio_file + Fore.RESET)
+
+                            # update id3v2 with metadata and embed front cover image
+                            self.playlist_uri = uri
+                            set_metadata_tags(args, self.audio_file, idx, track, self)
+
                             # Touch the file to adjust the modified date
                             Popen(['touch', audio_file_enc])
                             time.sleep(0.1)
